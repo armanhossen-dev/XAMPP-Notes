@@ -1,0 +1,42 @@
+package com.studentnest;
+
+import java.lang.classfile.instruction.DiscontinuedInstruction;
+import java.sql.*;
+
+import static java.lang.Class.forName;
+
+public class Main {
+    public static void main(String[] args) {
+        String user_name = "admin123";
+        String user_pass = "1234";
+//        String url = "jdbc:mysql//localhost:3306/databasename";
+        String url = "jdbc:mysql://localhost:3306/firstdb";
+
+        try{
+            //enter class driver name of MySQL java Connector ("com.mysql.cj.jdbc.Driver")
+
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection conn = DriverManager.getConnection(url,user_name, user_pass );
+            String sql = "SELECT * FROM userlogin";
+            PreparedStatement post =  conn.prepareStatement(sql);
+            ResultSet rs = post.executeQuery();
+//            if(rs.next()){
+//                System.out.println(rs.getString(3) + " " + rs.getString(4));
+//            }
+            // Use a while loop to iterate through every row
+            while (rs.next()) {
+                System.out.println(rs.getString(3) + " " + rs.getString(4));
+            }
+            // run to see the names fname , lname
+            //java.lang.ClassNotFoundException: com.mysql.cj.jdbc.Driver
+            //	at com.studentnest.Main.main(Main.java:29)
+            // if fount this error then go to project folder leftside then righ click
+            // -> project structure -> Modules -> Dependencies -> + -> library -> java-> search for -> mysql then press ssearch icon then select
+            // the latest mysql-java-connector then -> select the js connector -> then ok-> name as desired name then ok -> apply -> ok
+        } catch (SQLException | ClassNotFoundException e) {
+
+            throw new RuntimeException(e);
+        }
+
+    }
+}

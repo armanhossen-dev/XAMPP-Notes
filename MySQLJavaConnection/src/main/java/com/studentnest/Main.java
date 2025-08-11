@@ -1,0 +1,66 @@
+import java.sql.*;
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        String url = "jdbc:mysql://localhost:3306/firstdb";
+        String user_name = "root"; // Or your MySQL username
+        String user_pass = "";     // Or your MySQL password
+
+        // 1. Get user input
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter username: ");
+        String newUsername = scanner.nextLine();
+        System.out.print("Enter user password: ");
+        String newUserPass = scanner.nextLine();
+        System.out.print("Enter first name: ");
+        String newFirstName = scanner.nextLine();
+        System.out.print("Enter last name: ");
+        String newLastName = scanner.nextLine();
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection conn = DriverManager.getConnection(url, user_name, user_pass);
+
+            // 2. Prepare the INSERT statement
+            String sql = "INSERT INTO userlogin (username, userpass, firstname, lastname) VALUES (?, ?, ?, ?)";
+            PreparedStatement post = conn.prepareStatement(sql);
+
+            // 3. Set the values from user input
+            post.setString(1, newUsername);
+            post.setString(2, newUserPass);
+            post.setString(3, newFirstName);
+            post.setString(4, newLastName);
+
+            // Execute the statement
+            int rowsAffected = post.executeUpdate();
+
+            // Check if the insertion was successful
+            if (rowsAffected > 0) {
+                System.out.println("Data inserted successfully!");
+            } else {
+                System.out.println("Insertion failed.");
+            }
+
+            conn.close();
+            scanner.close();
+
+            //to show all those inputs
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection cc = DriverManager.getConnection(url,user_name, user_pass );
+            String sql2 = "SELECT * FROM userlogin";
+            PreparedStatement post2 =  cc.prepareStatement(sql2);
+            ResultSet rs = post2.executeQuery();
+            int i = 0;
+            System.out.println("Showing All Users Name: ");
+            while (rs.next()) {
+                i++;
+                System.out.println(i +  " Name: "+ rs.getString(3) + " " + rs.getString(4));
+            }
+
+        } catch (SQLException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
